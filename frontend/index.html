@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT Career Path Guide</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 IT Career Navigator</h1>
+            <p>Find your perfect tech role based on who you are.</p>
+        </header>
+
+        <div id="quiz-container">
+            <div id="progress-bar"><div id="progress"></div></div>
+            <div id="question-card">
+                <h3 id="question-text">Loading...</h3>
+                <div id="options-container"></div>
+            </div>
+            <button id="next-btn" style="display:none;">Next Question</button>
+        </div>
+
+        <div id="result-container" class="hidden">
+            <h2>Your Career Recommendation</h2>
+            <div id="ai-response">
+                </div>
+            <button onclick="location.reload()">Take Quiz Again</button>
+        </div>
+
+        <div id="loading-spinner" class="hidden">
+            <div class="spinner"></div>
+            <p>AI is analyzing your personality and skills...</p>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
