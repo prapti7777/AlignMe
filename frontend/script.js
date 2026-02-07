@@ -96,27 +96,39 @@ function loadQuestion() {
     const optionsBox = document.getElementById('options-container');
     const progress = document.getElementById('progress');
     
+    // Calculate total progress across both phases (20 + 10 = 30)
+    const totalQuestions = personalityQuestions.length + technicalQuestions.length;
+    
+    // Clear previous options
     optionsBox.innerHTML = '';
     
     if (currentPhase === "personality") {
         const q = personalityQuestions[currentIndex];
-        questionBox.innerText = `[Personality ${currentIndex + 1}/20] ${q.text}`;
+        questionBox.innerText = `Phase 1: ${q.text}`;
         
-        // Mini-IPIP standard 5-point scale
+        // Update Progress Bar (1 to 20)
+        const currentProgress = ((currentIndex + 1) / totalQuestions) * 100;
+        progress.style.width = `${currentProgress}%`;
+
+        // Create 1-5 Rating Buttons
         const labels = ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"];
         labels.forEach((label, index) => {
             const btn = document.createElement('button');
             btn.className = 'option-btn';
             btn.innerText = label;
-            btn.onclick = () => handleAnswer(index + 1); // 1 to 5
+            btn.onclick = () => handleAnswer(index + 1); // Scores 1 through 5
             optionsBox.appendChild(btn);
         });
-        progress.style.width = `${(currentIndex / 20) * 50}%`; // 0-50% for phase 1
 
     } else {
         const q = technicalQuestions[currentIndex];
-        questionBox.innerText = `[Technical ${currentIndex + 1}] ${q.text}`;
+        questionBox.innerText = `Phase 2: ${q.text}`;
         
+        // Update Progress Bar (21 to 30)
+        const currentProgress = ((personalityQuestions.length + currentIndex + 1) / totalQuestions) * 100;
+        progress.style.width = `${currentProgress}%`;
+        
+        // Create Multiple Choice Buttons
         q.options.forEach(opt => {
             const btn = document.createElement('button');
             btn.className = 'option-btn';
@@ -124,7 +136,6 @@ function loadQuestion() {
             btn.onclick = () => handleAnswer(opt);
             optionsBox.appendChild(btn);
         });
-        progress.style.width = `${50 + (currentIndex / technicalQuestions.length) * 50}%`; // 50-100% for phase 2
     }
 }
 
