@@ -156,7 +156,7 @@ function startTechnicalPhase() {
     const optionsBox = document.getElementById('options-container');
     
     questionBox.innerText = "Personality Profile Complete!";
-    optionsBox.innerHTML = `<button class="option-btn selected" onclick="beginTech()">Start Technical Round </button>`;
+    optionsBox.innerHTML = `<button class="option-btn selected" onclick="beginTech()">Start Technical Round 🚀</button>`;
 }
 
 function beginTech() {
@@ -179,15 +179,18 @@ async function submitFinalData() {
         const data = await response.json();
         let rawText = data.result;
 
-        // 1. Markdown to HTML Header/Bold replacements
+        // 1. Convert Markdown headers and bolding
         let formatted = rawText
-            .replace(/^## (.*$)/gim, '<h3 class="result-header"> $1</h3>')
-            .replace(/^### (.*$)/gim, '<h4 class="result-subheader"> $1</h4>')
+            .replace(/^## (.*$)/gim, '<h3 class="result-header">🎯 $1</h3>')
+            .replace(/^### (.*$)/gim, '<h4 class="result-subheader">👤 $1</h4>')
             .replace(/\*\*(.*)\*\*/gim, '<strong>$1</strong>')
             .replace(/^\* (.*$)/gim, '<li class="result-list-item">$1</li>');
 
-        // 2. Split by double newlines to find paragraphs
-        // We wrap blocks that don't already have HTML tags into <p> tags
+        // 2. Fix Roadmap Spacing: Find "1.", "2.", "3." and wrap them in styled divs
+        // This ensures a clear gap between the roadmap steps
+        formatted = formatted.replace(/(\d\.\s)/g, '<div class="roadmap-point">$1');
+
+        // 3. Paragraph wrapping logic
         let finalHtml = formatted.split('\n\n').map(block => {
             if (block.trim() && !block.trim().startsWith('<')) {
                 return `<p class="result-paragraph">${block.trim()}</p>`;
