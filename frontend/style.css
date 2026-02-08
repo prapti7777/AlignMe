@@ -40,7 +40,7 @@ body {
     height: 8px; 
     border-radius: 4px; 
     margin-bottom: 25px; 
-    overflow: hidden; /* Ensures the inner bar doesn't spill out */
+    overflow: hidden; 
 }
 
 #progress { 
@@ -92,30 +92,43 @@ body {
     100% { transform: rotate(360deg); } 
 }
 
-/* 6. AI Result Formatting (Fixed Spacing) */
+/* 6. AI Result Formatting (Fixed Spacing & Professional Look) */
 #ai-response { 
     text-align: left;
-    padding: 20px; 
-    background: #ffffff; /* White background for the report look */
+    padding: 25px; 
+    background: #ffffff; 
     border: 1px solid var(--border);
-    border-radius: 8px; 
+    border-radius: 12px; 
     margin-top: 20px;
 }
 
 .result-header {
-    margin: 0 0 10px 0;
+    margin: 0 0 15px 0;
     color: var(--primary);
     border-bottom: 2px solid var(--progress-bg);
-    padding-bottom: 5px;
+    padding-bottom: 8px;
+    font-size: 1.3rem;
 }
 
 .result-subheader {
-    margin: 20px 0 10px 0;
+    margin: 25px 0 12px 0;
     font-weight: 600;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
 }
 
-.result-text {
-    margin-bottom: 15px;
+.result-paragraph {
+    margin: 0 0 16px 0; /* Consistent spacing between text blocks */
     color: var(--text-light);
     line-height: 1.7;
+    font-size: 0.95rem;
+}
+
+.result-list-item {
+    margin-bottom: 10px;
+    padding-left: 10px;
+    color: var(--text-light);
+    line-height: 1.5;
+    list-style-position: inside;
 }

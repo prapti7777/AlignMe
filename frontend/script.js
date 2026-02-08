@@ -23,61 +23,51 @@ const personalityQuestions = [
 ];
 
 const technicalQuestions = [
-    // 1. Logic & Problem Solving (General Aptitude)
     { 
         text: "If you have a list of 1000 sorted names and need to find one specific name, which method is most efficient?", 
         options: ["Checking every name from start to finish", "Splitting the list in half repeatedly (Binary Search)", "Randomly picking names until found"],
         domain: "Logic"
     },
-    // 2. Frontend vs Backend (Development Preference)
     { 
         text: "When building an app, which part excites you more?", 
         options: ["Designing the buttons, colors, and layout", "Connecting the app to a database and handling data", "Ensuring the app is unhackable and secure"],
         domain: "Preference"
     },
-    // 3. Data & Patterns (Data Science/AI)
     { 
         text: "What is the primary purpose of 'Clean Data' in a project?", 
         options: ["To make the database look pretty", "To ensure AI models or charts are accurate and not misleading", "To save space on the hard drive"],
         domain: "Data"
     },
-    // 4. Cybersecurity (Security)
     { 
         text: "What does a 'Firewall' primarily do?", 
         options: ["Speeds up the internet connection", "Monitors and filters incoming/outgoing network traffic", "Deletes old files automatically"],
         domain: "Security"
     },
-    // 5. Cloud/Infrastructure (DevOps/Cloud)
     { 
         text: "What is the main benefit of 'Cloud Computing' (like AWS or Google Cloud)?", 
         options: ["It makes the computer screen brighter", "It allows accessing servers and storage over the internet instead of owning hardware", "It works without any internet connection"],
         domain: "Cloud"
     },
-    // 6. Coding Fundamentals (Software Engineering)
     { 
         text: "In programming, what is a 'Variable' used for?", 
         options: ["To store information that can be used and changed", "To fix a physical hardware error", "To close the program immediately"],
         domain: "Dev"
     },
-    // 7. Creative/User-Centric (UI/UX)
     { 
         text: "If a user finds a website 'confusing to navigate', whose primary job is it to fix the flow?", 
         options: ["Backend Developer", "UI/UX Designer", "Database Administrator"],
         domain: "Design"
     },
-    // 8. Database (Backend/Data)
     { 
         text: "What is SQL used for?", 
         options: ["Styling a webpage with colors", "Managing and querying data in a database", "Editing video and image files"],
         domain: "Database"
     },
-    // 9. Emerging Tech (AI/ML)
     { 
         text: "What is 'Machine Learning'?", 
         options: ["Teaching computers to learn from data without being explicitly programmed for every task", "Building a physical robot with metal parts", "Increasing the physical RAM of a computer"],
         domain: "AI"
     },
-    // 10. Project Management (Management/Analyst)
     { 
         text: "What is the 'Agile' methodology?", 
         options: ["A way to code faster by skipping testing", "A project management style focused on small, iterative updates and team feedback", "A specific type of high-speed internet cable"],
@@ -86,7 +76,7 @@ const technicalQuestions = [
 ];
 
 // --- STATE MANAGEMENT ---
-let currentPhase = "personality"; // "personality" or "technical"
+let currentPhase = "personality"; 
 let currentIndex = 0;
 let allResponses = { personality: [], technical: [] };
 
@@ -96,27 +86,22 @@ function loadQuestion() {
     const optionsBox = document.getElementById('options-container');
     const progress = document.getElementById('progress');
     
-    // Calculate total progress across both phases (20 + 10 = 30)
     const totalQuestions = personalityQuestions.length + technicalQuestions.length;
-    
-    // Clear previous options
     optionsBox.innerHTML = '';
     
     if (currentPhase === "personality") {
         const q = personalityQuestions[currentIndex];
         questionBox.innerText = `Phase 1: ${q.text}`;
         
-        // Update Progress Bar (1 to 20)
         const currentProgress = ((currentIndex + 1) / totalQuestions) * 100;
         progress.style.width = `${currentProgress}%`;
 
-        // Create 1-5 Rating Buttons
         const labels = ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"];
         labels.forEach((label, index) => {
             const btn = document.createElement('button');
             btn.className = 'option-btn';
             btn.innerText = label;
-            btn.onclick = () => handleAnswer(index + 1); // Scores 1 through 5
+            btn.onclick = () => handleAnswer(index + 1);
             optionsBox.appendChild(btn);
         });
 
@@ -124,11 +109,9 @@ function loadQuestion() {
         const q = technicalQuestions[currentIndex];
         questionBox.innerText = `Phase 2: ${q.text}`;
         
-        // Update Progress Bar (21 to 30)
         const currentProgress = ((personalityQuestions.length + currentIndex + 1) / totalQuestions) * 100;
         progress.style.width = `${currentProgress}%`;
         
-        // Create Multiple Choice Buttons
         q.options.forEach(opt => {
             const btn = document.createElement('button');
             btn.className = 'option-btn';
@@ -169,12 +152,11 @@ function handleAnswer(answer) {
 }
 
 function startTechnicalPhase() {
-    // Small transition
     const questionBox = document.getElementById('question-text');
     const optionsBox = document.getElementById('options-container');
     
     questionBox.innerText = "Personality Profile Complete!";
-    optionsBox.innerHTML = `<button class="option-btn selected" onclick="beginTech()">Start Technical Round 🚀</button>`;
+    optionsBox.innerHTML = `<button class="option-btn selected" onclick="beginTech()">Start Technical Round </button>`;
 }
 
 function beginTech() {
@@ -195,21 +177,32 @@ async function submitFinalData() {
         });
 
         const data = await response.json();
-        
-        // STABLE FORMATTING LOGIC
-        let formattedText = data.result
-            .replace(/^## (.*$)/gim, '<h3>$1</h3>')
-            .replace(/^### (.*$)/gim, '<h4>$1</h4>')
+        let rawText = data.result;
+
+        // 1. Markdown to HTML Header/Bold replacements
+        let formatted = rawText
+            .replace(/^## (.*$)/gim, '<h3 class="result-header"> $1</h3>')
+            .replace(/^### (.*$)/gim, '<h4 class="result-subheader"> $1</h4>')
             .replace(/\*\*(.*)\*\*/gim, '<strong>$1</strong>')
-            .replace(/^\* (.*$)/gim, '<li>$1</li>')
-            .replace(/\n/g, '<br>'); 
+            .replace(/^\* (.*$)/gim, '<li class="result-list-item">$1</li>');
+
+        // 2. Split by double newlines to find paragraphs
+        // We wrap blocks that don't already have HTML tags into <p> tags
+        let finalHtml = formatted.split('\n\n').map(block => {
+            if (block.trim() && !block.trim().startsWith('<')) {
+                return `<p class="result-paragraph">${block.trim()}</p>`;
+            }
+            return block;
+        }).join('');
 
         document.getElementById('loading-spinner').classList.add('hidden');
         document.getElementById('result-container').classList.remove('hidden');
-        document.getElementById('ai-response').innerHTML = formattedText;
+        document.getElementById('ai-response').innerHTML = finalHtml;
 
     } catch (error) {
+        console.error(error);
         alert("Make sure your Python backend is running!");
     }
 }
+
 loadQuestion();
