@@ -1,4 +1,3 @@
-// --- QUESTION DATA ---
 const personalityQuestions = [
     { text: "I am the life of the party.", trait: "Extraversion" },
     { text: "I sympathize with others' feelings.", trait: "Agreeableness" },
@@ -23,95 +22,45 @@ const personalityQuestions = [
 ];
 
 const technicalQuestions = [
-    { 
-        text: "If you have a list of 1000 sorted names and need to find one specific name, which method is most efficient?", 
-        options: ["Checking every name from start to finish", "Splitting the list in half repeatedly (Binary Search)", "Randomly picking names until found"],
-        domain: "Logic"
-    },
-    { 
-        text: "When building an app, which part excites you more?", 
-        options: ["Designing the buttons, colors, and layout", "Connecting the app to a database and handling data", "Ensuring the app is unhackable and secure"],
-        domain: "Preference"
-    },
-    { 
-        text: "What is the primary purpose of 'Clean Data' in a project?", 
-        options: ["To make the database look pretty", "To ensure AI models or charts are accurate and not misleading", "To save space on the hard drive"],
-        domain: "Data"
-    },
-    { 
-        text: "What does a 'Firewall' primarily do?", 
-        options: ["Speeds up the internet connection", "Monitors and filters incoming/outgoing network traffic", "Deletes old files automatically"],
-        domain: "Security"
-    },
-    { 
-        text: "What is the main benefit of 'Cloud Computing' (like AWS or Google Cloud)?", 
-        options: ["It makes the computer screen brighter", "It allows accessing servers and storage over the internet instead of owning hardware", "It works without any internet connection"],
-        domain: "Cloud"
-    },
-    { 
-        text: "In programming, what is a 'Variable' used for?", 
-        options: ["To store information that can be used and changed", "To fix a physical hardware error", "To close the program immediately"],
-        domain: "Dev"
-    },
-    { 
-        text: "If a user finds a website 'confusing to navigate', whose primary job is it to fix the flow?", 
-        options: ["Backend Developer", "UI/UX Designer", "Database Administrator"],
-        domain: "Design"
-    },
-    { 
-        text: "What is SQL used for?", 
-        options: ["Styling a webpage with colors", "Managing and querying data in a database", "Editing video and image files"],
-        domain: "Database"
-    },
-    { 
-        text: "What is 'Machine Learning'?", 
-        options: ["Teaching computers to learn from data without being explicitly programmed for every task", "Building a physical robot with metal parts", "Increasing the physical RAM of a computer"],
-        domain: "AI"
-    },
-    { 
-        text: "What is the 'Agile' methodology?", 
-        options: ["A way to code faster by skipping testing", "A project management style focused on small, iterative updates and team feedback", "A specific type of high-speed internet cable"],
-        domain: "Management"
-    }
+    { text: "Find a name in a sorted list of 1000 names?", options: ["Linear Search", "Binary Search", "Random"], domain: "Logic" },
+    { text: "What excites you more?", options: ["UI/Design", "Backend/Data", "Security"], domain: "Preference" },
+    { text: "Purpose of 'Clean Data'?", options: ["Pretty UI", "Accurate AI/Models", "Save Space"], domain: "Data" },
+    { text: "Firewall function?", options: ["Speed Up", "Filter Traffic", "Delete Files"], domain: "Security" },
+    { text: "Cloud Computing benefit?", options: ["Brighter Screen", "Remote Servers", "No Internet"], domain: "Cloud" },
+    { text: "What is a Variable?", options: ["Store Info", "Fix Hardware", "Close Program"], domain: "Dev" },
+    { text: "UI is confusing, who fixes it?", options: ["Backend", "UI/UX Designer", "DBA"], domain: "Design" },
+    { text: "What is SQL?", options: ["Styles", "Databases", "Video Editing"], domain: "Database" },
+    { text: "Machine Learning?", options: ["Learn from Data", "Metal Robots", "More RAM"], domain: "AI" },
+    { text: "Agile methodology?", options: ["Skip Testing", "Iterative/Feedback", "Fast Cable"], domain: "Management" }
 ];
 
-// --- STATE MANAGEMENT ---
 let currentPhase = "personality"; 
 let currentIndex = 0;
-let allResponses = { personality: [], technical: [] };
+let allResponses = { personality: [], technical: [], desiredRole: null };
 
-// --- CORE FUNCTIONS ---
 function loadQuestion() {
     const questionBox = document.getElementById('question-text');
     const optionsBox = document.getElementById('options-container');
     const progress = document.getElementById('progress');
+    const total = personalityQuestions.length + technicalQuestions.length;
     
-    const totalQuestions = personalityQuestions.length + technicalQuestions.length;
     optionsBox.innerHTML = '';
     
     if (currentPhase === "personality") {
         const q = personalityQuestions[currentIndex];
-        questionBox.innerText = `Phase 1: ${q.text}`;
-        
-        const currentProgress = ((currentIndex + 1) / totalQuestions) * 100;
-        progress.style.width = `${currentProgress}%`;
-
-        const labels = ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"];
-        labels.forEach((label, index) => {
+        questionBox.innerText = `Personality: ${q.text}`;
+        progress.style.width = `${((currentIndex + 1) / total) * 100}%`;
+        ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"].forEach((label, i) => {
             const btn = document.createElement('button');
             btn.className = 'option-btn';
             btn.innerText = label;
-            btn.onclick = () => handleAnswer(index + 1);
+            btn.onclick = () => handleAnswer(i + 1);
             optionsBox.appendChild(btn);
         });
-
     } else {
         const q = technicalQuestions[currentIndex];
-        questionBox.innerText = `Phase 2: ${q.text}`;
-        
-        const currentProgress = ((personalityQuestions.length + currentIndex + 1) / totalQuestions) * 100;
-        progress.style.width = `${currentProgress}%`;
-        
+        questionBox.innerText = `Technical: ${q.text}`;
+        progress.style.width = `${((personalityQuestions.length + currentIndex + 1) / total) * 100}%`;
         q.options.forEach(opt => {
             const btn = document.createElement('button');
             btn.className = 'option-btn';
@@ -124,87 +73,70 @@ function loadQuestion() {
 
 function handleAnswer(answer) {
     if (currentPhase === "personality") {
-        allResponses.personality.push({
-            q: personalityQuestions[currentIndex].text,
-            val: answer,
-            trait: personalityQuestions[currentIndex].trait
-        });
+        allResponses.personality.push({ val: answer, trait: personalityQuestions[currentIndex].trait });
         currentIndex++;
-        
-        if (currentIndex >= personalityQuestions.length) {
-            startTechnicalPhase();
-        } else {
-            loadQuestion();
-        }
+        if (currentIndex >= personalityQuestions.length) showChoiceScreen();
+        else loadQuestion();
     } else {
-        allResponses.technical.push({
-            q: technicalQuestions[currentIndex].text,
-            ans: answer
-        });
+        allResponses.technical.push({ q: technicalQuestions[currentIndex].text, ans: answer });
         currentIndex++;
-        
-        if (currentIndex >= technicalQuestions.length) {
-            submitFinalData();
-        } else {
-            loadQuestion();
-        }
+        if (currentIndex >= technicalQuestions.length) submitFinalData();
+        else loadQuestion();
     }
 }
 
-function startTechnicalPhase() {
-    const questionBox = document.getElementById('question-text');
-    const optionsBox = document.getElementById('options-container');
-    
-    questionBox.innerText = "Personality Profile Complete!";
-    optionsBox.innerHTML = `<button class="option-btn selected" onclick="beginTech()">Start Technical Round 🚀</button>`;
+function showChoiceScreen() {
+    document.getElementById('question-card').classList.add('hidden');
+    document.getElementById('choice-screen').classList.remove('hidden');
+    document.getElementById('progress').style.width = '66%';
 }
 
 function beginTech() {
-    currentPhase = "technical";
-    currentIndex = 0;
+    currentPhase = "technical"; currentIndex = 0;
+    document.getElementById('choice-screen').classList.add('hidden');
+    document.getElementById('question-card').classList.remove('hidden');
     loadQuestion();
+}
+
+function startInterestPath() {
+    const role = document.getElementById('desired-role').value;
+    if (!role) return alert("Please select a career path from the dropdown!");
+    allResponses.desiredRole = role;
+    submitFinalData();
 }
 
 async function submitFinalData() {
     document.getElementById('quiz-container').classList.add('hidden');
     document.getElementById('loading-spinner').classList.remove('hidden');
-
+    
     try {
-        const response = await fetch('http://127.0.0.1:5000/analyze', {
+        const res = await fetch('http://127.0.0.1:5000/analyze', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ responses: allResponses })
         });
+        
+        const data = await res.json();
+        if (data.error) throw new Error(data.error);
 
-        const data = await response.json();
-        let rawText = data.result;
+        // CLEANING FOR GEMINI 3:
+        // Removes hidden thinking blocks if the API leaks them into the text string
+        let cleanText = data.result.replace(/<thought>[\s\S]*?<\/thought>/g, "").trim();
 
-        // 1. Convert Markdown headers and bolding
-        let formatted = rawText
+        // FORMATTING:
+        let formatted = cleanText
             .replace(/^## (.*$)/gim, '<h3 class="result-header">🎯 $1</h3>')
             .replace(/^### (.*$)/gim, '<h4 class="result-subheader">👤 $1</h4>')
             .replace(/\*\*(.*)\*\*/gim, '<strong>$1</strong>')
-            .replace(/^\* (.*$)/gim, '<li class="result-list-item">$1</li>');
+            .replace(/(\d\.\s)/g, '<div class="roadmap-point">$1');
 
-        // 2. Fix Roadmap Spacing: Find "1.", "2.", "3." and wrap them in styled divs
-        // This ensures a clear gap between the roadmap steps
-        formatted = formatted.replace(/(\d\.\s)/g, '<div class="roadmap-point">$1');
-
-        // 3. Paragraph wrapping logic
-        let finalHtml = formatted.split('\n\n').map(block => {
-            if (block.trim() && !block.trim().startsWith('<')) {
-                return `<p class="result-paragraph">${block.trim()}</p>`;
-            }
-            return block;
-        }).join('');
-
+        document.getElementById('ai-response').innerHTML = formatted;
         document.getElementById('loading-spinner').classList.add('hidden');
         document.getElementById('result-container').classList.remove('hidden');
-        document.getElementById('ai-response').innerHTML = finalHtml;
-
-    } catch (error) {
-        console.error(error);
-        alert("Make sure your Python backend is running!");
+    } catch (e) {
+        console.error("Submission Error:", e);
+        alert("Server Error. Please ensure app.py is running and model name is correct.");
+        location.reload();
     }
 }
 

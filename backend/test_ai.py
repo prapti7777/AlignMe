@@ -1,28 +1,16 @@
 import os
 from google import genai
 from dotenv import load_dotenv
+import json
 
-# 1. Load your API key
 load_dotenv()
-api_key = os.getenv("GEMINI_API_KEY")
+client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
-# 2. Initialize the Client
-client = genai.Client(api_key=api_key)
-
-print("⏳ Connecting to Gemini (2026 Stable Model)...")
-
+print("Checking available models...")
 try:
-    # 3. Using the 2.5 Flash-Lite model (High quota, no credit card required)
-    response = client.models.generate_content(
-        model="gemini-2.5-flash-lite", 
-        contents="Hello! Say 'System online' if you can hear me."
-    )
-    
-    print("\n--- AI RESPONSE ---")
-    print(response.text.strip())
-    print("-------------------\n")
-    print("✅ Success! Your backend is officially up to date.")
-
+    # We use model_dump() to see all the attributes of the model object
+    for model in client.models.list():
+        m_data = model.model_dump()
+        print(f"Name: {m_data.get('name')} | Version: {m_data.get('version')}")
 except Exception as e:
-    # If 2.5 is not yet in your region, this catch will help us identify why
-    print(f"❌ Error: {e}")
+    print(f"Failed to list models: {e}")
