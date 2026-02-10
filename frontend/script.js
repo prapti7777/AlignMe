@@ -119,23 +119,26 @@ async function submitFinalData() {
         const data = await res.json();
         if (data.error) throw new Error(data.error);
 
-        // CLEANING FOR GEMINI 3:
         let cleanText = data.result.replace(/<thought>[\s\S]*?<\/thought>/g, "").trim();
 
-        // REFINED FORMATTING:
+        // THE ULTIMATE FORMATTER:
         let formatted = cleanText
-            // 1. Headers
-            .replace(/^## (.*$)/gim, '<h3 class="result-header">🎯 $1</h3>')
-            .replace(/^### (.*$)/gim, '<h4 class="result-subheader">👤 $1</h4>')
+            // 1. Convert headers
+            .replace(/^## (.*$)/gim, '<h3 class="result-header"> $1</h3>')
+            .replace(/^### (.*$)/gim, '<h4 class="result-subheader"> $1</h4>')
             
-            // 2. Bold Text Cleanup (Standard Markdown **)
+            // 2. Bold tags
             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
             
-            // 3. Spacing & Asterisk Fix (Converts Markdown bullets to spaced items)
-            .replace(/^\* (.*$)/gim, '<div class="assessment-item">🔹 $1</div>')
-            
-            // 4. Roadmap Points (Preserve existing logic)
-            .replace(/(\d\.\s)/g, '<div class="roadmap-point">$1');
+            // 3. REMOVE STRAY NUMBERS & DOTS (The 1. 2. 3. issue)
+            .replace(/^\s*(\d+\.|[\*\-\•])\s*$/gm, '') 
+            .replace(/\s+(\d+\.)\s*$/gm, '')
+
+            // 4. TRANSFORM TERMS INTO DIAMOND BLOCKS
+            // This regex captures the Label and the description, putting them in the assessment-item div
+            .replace(/(?:\d+\.\s*)?\*?\s*(Current Standing|Key Focus|Short Term|Mid Term|Long Term)[:\s]*(.*)/gim, 
+                     '<div class="assessment-item">🔹 <strong>$1:</strong> $2</div>')
+
 
         document.getElementById('ai-response').innerHTML = formatted;
         document.getElementById('loading-spinner').classList.add('hidden');
