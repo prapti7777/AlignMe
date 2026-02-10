@@ -53,6 +53,7 @@ STRICT OUTPUT FORMAT (Markdown):
 
 ### 💻 Technical Assessment
 * **Current Standing:** [1 sentence assessment of their level]
+<br>
 * **Key Focus:** [1 specific technical concept or tool they should master first]
 
 ### 🗺️ 2026 Roadmap (3 Steps)

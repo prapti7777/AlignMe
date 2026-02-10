@@ -120,14 +120,21 @@ async function submitFinalData() {
         if (data.error) throw new Error(data.error);
 
         // CLEANING FOR GEMINI 3:
-        // Removes hidden thinking blocks if the API leaks them into the text string
         let cleanText = data.result.replace(/<thought>[\s\S]*?<\/thought>/g, "").trim();
 
-        // FORMATTING:
+        // REFINED FORMATTING:
         let formatted = cleanText
+            // 1. Headers
             .replace(/^## (.*$)/gim, '<h3 class="result-header">🎯 $1</h3>')
             .replace(/^### (.*$)/gim, '<h4 class="result-subheader">👤 $1</h4>')
-            .replace(/\*\*(.*)\*\*/gim, '<strong>$1</strong>')
+            
+            // 2. Bold Text Cleanup (Standard Markdown **)
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            
+            // 3. Spacing & Asterisk Fix (Converts Markdown bullets to spaced items)
+            .replace(/^\* (.*$)/gim, '<div class="assessment-item">🔹 $1</div>')
+            
+            // 4. Roadmap Points (Preserve existing logic)
             .replace(/(\d\.\s)/g, '<div class="roadmap-point">$1');
 
         document.getElementById('ai-response').innerHTML = formatted;
@@ -135,7 +142,7 @@ async function submitFinalData() {
         document.getElementById('result-container').classList.remove('hidden');
     } catch (e) {
         console.error("Submission Error:", e);
-        alert("Server Error. Please ensure app.py is running and model name is correct.");
+        alert("Server Error. Please ensure app.py is running.");
         location.reload();
     }
 }
