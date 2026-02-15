@@ -121,24 +121,26 @@ async function submitFinalData() {
 
         let cleanText = data.result.replace(/<thought>[\s\S]*?<\/thought>/g, "").trim();
 
-        // THE ULTIMATE FORMATTER:
+        // REFINED CLEANING AND FORMATTING LOGIC
         let formatted = cleanText
-            // 1. Convert headers
-            .replace(/^## (.*$)/gim, '<h3 class="result-header"> $1</h3>')
-            .replace(/^### (.*$)/gim, '<h4 class="result-subheader"> $1</h4>')
+            // 1. Headers
+            .replace(/^## (.*$)/gim, '<h3 class="result-header">🎯 $1</h3>')
+            .replace(/^### (.*$)/gim, '<h4 class="result-subheader">👤 $1</h4>')
             
-            // 2. Bold tags
+            // 2. Bold Text
             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
             
-            // 3. REMOVE STRAY NUMBERS & DOTS (The 1. 2. 3. issue)
-            .replace(/^\s*(\d+\.|[\*\-\•])\s*$/gm, '') 
-            .replace(/\s+(\d+\.)\s*$/gm, '')
-
-            // 4. TRANSFORM TERMS INTO DIAMOND BLOCKS
-            // This regex captures the Label and the description, putting them in the assessment-item div
-            .replace(/(?:\d+\.\s*)?\*?\s*(Current Standing|Key Focus|Short Term|Mid Term|Long Term)[:\s]*(.*)/gim, 
+            // 3. REMOVE STANDALONE ASTERISKS AND NUMBERS
+            // Matches lines that are just "*" or "1." or similar markers
+            .replace(/^\s*[\*\-\•\d\.]+\s*$/gm, '') 
+            
+            // 4. TRANSFORM KEY TERMS INTO CLEAN DIAMOND BLOCKS
+            // This captures the label (e.g., Short Term) and wraps the content, removing leading numbers/asterisks
+            .replace(/(?:\d+\.\s*)?[\*\-\•]?\s*(Current Standing|Key Focus|Short Term|Mid Term|Long Term)[:\s]*(.*)/gim, 
                      '<div class="assessment-item">🔹 <strong>$1:</strong> $2</div>')
 
+            // 5. FINAL CLEANUP: Remove stray bullets that might still be on new lines
+            .replace(/^\s*[\*\u2b26\u25ca\u25c7\u25c6🔹]\s*$/gm, '');
 
         document.getElementById('ai-response').innerHTML = formatted;
         document.getElementById('loading-spinner').classList.add('hidden');
