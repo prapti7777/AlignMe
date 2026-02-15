@@ -1,10 +1,7 @@
 :root {
-    /* Brand Colors */
     --primary-teal: #008080;
     --accent-yellow: #FFD700;
     --pure-white: #ffffff;
-    
-    /* Functional Colors */
     --bg-light: #f4f7f6; 
     --text-main: #1a2e2e; 
     --text-muted: #4a6666;
@@ -31,11 +28,66 @@ body {
     border-top: 8px solid var(--primary-teal);
 }
 
+/* Header Layout: Aligns button and title on one row */
+.header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
 .main-title {
-    text-align: center;
     color: var(--primary-teal);
     font-weight: 800;
     letter-spacing: -1px;
+    margin: 0;
+    flex-grow: 1;
+    text-align: center;
+}
+
+.tagline {
+    text-align: center;
+    margin-top: 5px;
+    color: var(--text-muted);
+}
+
+/* Updated Back Button Styling */
+.back-btn {
+    background: var(--pure-white);
+    border: 1px solid var(--border-color);
+    color: var(--primary-teal);
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Maintain a spacer on the right so the title stays perfectly centered */
+.header-spacer {
+    width: 42px; 
+}
+
+.back-btn:hover {
+    background: var(--primary-teal);
+    color: var(--pure-white);
+    border-color: var(--primary-teal);
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 128, 128, 0.2);
+}
+
+.back-btn.hidden {
+    visibility: hidden; /* Use visibility to keep the title centered when button is gone */
+}
+
+/* Quiz Content Styles */
+#quiz-container {
+    width: 100%;
+    margin-top: 20px;
 }
 
 #progress-bar {
@@ -73,19 +125,13 @@ body {
     transform: translateY(-2px);
 }
 
-.btn-submit {
-    background: var(--accent-yellow) !important;
-    border-color: var(--accent-yellow) !important;
-    color: #000 !important;
-    box-shadow: 0 4px 0 #d4b400;
+/* Result Styles */
+.assessment-item {
+    margin-bottom: 15px;
+    display: block;
+    line-height: 1.6;
 }
 
-.btn-submit:hover {
-    background: #ffdb1a !important;
-    transform: translateY(-1px);
-}
-
-/* AI Results Formatting & Spacing Fixes */
 .result-header {
     color: var(--primary-teal);
     background: #f0fdfa;
@@ -93,31 +139,20 @@ body {
     border-radius: 6px;
 }
 
-/* Added for Assessment Item Spacing */
-.assessment-item {
-    margin-bottom: 15px; /* Fixes spacing between Standing and Key Focus */
-    display: block;
-    line-height: 1.6;
-}
-
-/* Roadmap Block Styling */
-.roadmap-point {
-    border-left: 5px solid var(--accent-yellow);
-    background: var(--pure-white);
-    padding: 15px;
-    margin: 15px 0;
-    box-shadow: 2px 2px 10px rgba(0,0,0,0.05);
-}
-
-/* Clean Bold Text */
 strong {
     color: var(--primary-teal);
     font-weight: 700;
 }
 
-.hidden { 
-    display: none !important; 
+select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    border: 2px solid var(--border-color);
 }
+
+.hidden { display: none !important; }
 
 .spinner {
     border: 4px solid #f3f3f3;

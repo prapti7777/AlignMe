@@ -10,7 +10,16 @@
 <body>
     <div class="container">
         <header>
-            <h1 class="main-title">AlignMe</h1>
+            <div class="header-row">
+                <button id="back-btn" class="back-btn hidden" onclick="goBack()" title="Previous Question">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
+                </button>
+                <h1 class="main-title">AlignMe</h1>
+                <div class="header-spacer"></div>
+            </div>
             <p class="tagline">Find your perfect tech role based on who you are.</p>
         </header>
 
@@ -23,8 +32,8 @@
             </div>
 
             <div id="choice-screen" class="hidden">
-                <h3 style="text-align: center;">Profile Captured! </h3>
-                <p style="text-align: center; color: var(--text-light); margin-bottom: 25px;">How would you like to proceed?</p>
+                <h3 style="text-align: center;">Profile Captured!</h3>
+                <p style="text-align: center; color: var(--text-muted); margin-bottom: 25px;">How would you like to proceed?</p>
                 
                 <div class="choice-group">
                     <button class="option-btn" onclick="beginTech()">
@@ -32,7 +41,7 @@
                         <small style="display: block; font-size: 0.75rem; color: #64748b;">Let AI discover your ideal role</small>
                     </button>
 
-                    <div class="divider"><span>OR</span></div>
+                    <div style="text-align: center; margin: 15px 0; font-weight: bold; color: var(--text-muted);">OR</div>
 
                     <div class="custom-input-section">
                         <p style="font-size: 0.9rem; margin-bottom: 8px; font-weight: 600;">I already have a role in mind:</p>
@@ -55,7 +64,7 @@
                                 <option value="DevOps Engineer">DevOps Engineer</option>
                             </optgroup>
                         </select>
-                        <button class="option-btn selected" onclick="startInterestPath()">
+                        <button class="option-btn" style="background: var(--primary-teal); color: white;" onclick="startInterestPath()">
                             Get My Personalized Roadmap 
                         </button>
                     </div>
@@ -66,7 +75,7 @@
         <div id="result-container" class="hidden">
             <h2 style="text-align: center;">Your Roadmap</h2>
             <div id="ai-response"></div>
-            <button class="option-btn selected" style="margin-top: 20px;" onclick="location.reload()">Start Over</button>
+            <button class="option-btn" style="margin-top: 20px; background: var(--primary-teal); color: white;" onclick="location.reload()">Start Over</button>
         </div>
 
         <div id="loading-spinner" class="hidden">
@@ -77,4 +86,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-

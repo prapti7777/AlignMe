@@ -42,9 +42,17 @@ function loadQuestion() {
     const questionBox = document.getElementById('question-text');
     const optionsBox = document.getElementById('options-container');
     const progress = document.getElementById('progress');
+    const backBtn = document.getElementById('back-btn');
     const total = personalityQuestions.length + technicalQuestions.length;
     
     optionsBox.innerHTML = '';
+
+    // Toggle button visibility based on progress
+    if (currentPhase === "personality" && currentIndex === 0) {
+        backBtn.classList.add('hidden');
+    } else {
+        backBtn.classList.remove('hidden');
+    }
     
     if (currentPhase === "personality") {
         const q = personalityQuestions[currentIndex];
@@ -85,14 +93,42 @@ function handleAnswer(answer) {
     }
 }
 
+function goBack() {
+    const choiceScreen = document.getElementById('choice-screen');
+    const questionCard = document.getElementById('question-card');
+
+    if (!choiceScreen.classList.contains('hidden')) {
+        // Return to last personality question from Choice Screen
+        choiceScreen.classList.add('hidden');
+        questionCard.classList.remove('hidden');
+        currentPhase = "personality";
+        currentIndex = personalityQuestions.length - 1;
+        allResponses.personality.pop(); 
+        loadQuestion();
+    } else if (currentPhase === "technical" && currentIndex === 0) {
+        // Return to Choice Screen from first technical question
+        questionCard.classList.add('hidden');
+        choiceScreen.classList.remove('hidden');
+        document.getElementById('progress').style.width = '66%';
+    } else if (currentIndex > 0) {
+        // Standard step back
+        currentIndex--;
+        if (currentPhase === "personality") allResponses.personality.pop();
+        else allResponses.technical.pop();
+        loadQuestion();
+    }
+}
+
 function showChoiceScreen() {
     document.getElementById('question-card').classList.add('hidden');
     document.getElementById('choice-screen').classList.remove('hidden');
+    document.getElementById('back-btn').classList.remove('hidden');
     document.getElementById('progress').style.width = '66%';
 }
 
 function beginTech() {
-    currentPhase = "technical"; currentIndex = 0;
+    currentPhase = "technical"; 
+    currentIndex = 0;
     document.getElementById('choice-screen').classList.add('hidden');
     document.getElementById('question-card').classList.remove('hidden');
     loadQuestion();
@@ -100,7 +136,7 @@ function beginTech() {
 
 function startInterestPath() {
     const role = document.getElementById('desired-role').value;
-    if (!role) return alert("Please select a career path from the dropdown!");
+    if (!role) return alert("Please select a career path!");
     allResponses.desiredRole = role;
     submitFinalData();
 }
@@ -108,48 +144,31 @@ function startInterestPath() {
 async function submitFinalData() {
     document.getElementById('quiz-container').classList.add('hidden');
     document.getElementById('loading-spinner').classList.remove('hidden');
-    
+    document.getElementById('back-btn').classList.add('hidden'); // Hide back button during loading
+
     try {
         const res = await fetch('http://127.0.0.1:5000/analyze', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ responses: allResponses })
         });
-        
         const data = await res.json();
-        if (data.error) throw new Error(data.error);
-
         let cleanText = data.result.replace(/<thought>[\s\S]*?<\/thought>/g, "").trim();
-
-        // REFINED CLEANING AND FORMATTING LOGIC
+        
         let formatted = cleanText
-            // 1. Headers
             .replace(/^## (.*$)/gim, '<h3 class="result-header">🎯 $1</h3>')
-            .replace(/^### (.*$)/gim, '<h4 class="result-subheader">👤 $1</h4>')
-            
-            // 2. Bold Text
             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-            
-            // 3. REMOVE STANDALONE ASTERISKS AND NUMBERS
-            // Matches lines that are just "*" or "1." or similar markers
-            .replace(/^\s*[\*\-\•\d\.]+\s*$/gm, '') 
-            
-            // 4. TRANSFORM KEY TERMS INTO CLEAN DIAMOND BLOCKS
-            // This captures the label (e.g., Short Term) and wraps the content, removing leading numbers/asterisks
-            .replace(/(?:\d+\.\s*)?[\*\-\•]?\s*(Current Standing|Key Focus|Short Term|Mid Term|Long Term)[:\s]*(.*)/gim, 
-                     '<div class="assessment-item">🔹 <strong>$1:</strong> $2</div>')
-
-            // 5. FINAL CLEANUP: Remove stray bullets that might still be on new lines
-            .replace(/^\s*[\*\u2b26\u25ca\u25c7\u25c6🔹]\s*$/gm, '');
+            .replace(/(Current Standing|Key Focus|Short Term|Mid Term|Long Term)[:\s]*(.*)/gim, 
+                     '<div class="assessment-item">🔹 <strong>$1:</strong> $2</div>');
 
         document.getElementById('ai-response').innerHTML = formatted;
         document.getElementById('loading-spinner').classList.add('hidden');
         document.getElementById('result-container').classList.remove('hidden');
     } catch (e) {
-        console.error("Submission Error:", e);
-        alert("Server Error. Please ensure app.py is running.");
+        alert("Check your Flask server connection.");
         location.reload();
     }
 }
 
+// Initial Call
 loadQuestion();

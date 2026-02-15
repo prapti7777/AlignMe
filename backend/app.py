@@ -27,10 +27,10 @@ def analyze_career():
 
         # --- DYNAMIC PROMPT LOGIC ---
         if desired_role:
-            context_header = f"## 🎯 Targeted Role: {desired_role}"
+            context_header = f"##  Targeted Role: {desired_role}"
             task_description = f"The user has chosen to pursue a career as a {desired_role}. Analyze their personality traits and provide a technical roadmap specifically for this goal."
         else:
-            context_header = "## 🎯 Recommended Career: [Insert Recommended Role]"
+            context_header = "##  Recommended Career: [Insert Recommended Role]"
             task_description = "Based on their personality and technical aptitude results, recommend the most suitable IT career path and provide a roadmap."
 
         prompt = f"""
@@ -48,15 +48,15 @@ STRICT OUTPUT FORMAT (Markdown):
 
 {context_header}
 
-### 👤 Your Professional Profile
+👤 Your Professional Profile
 [Write 1 single paragraph starting with "Based on your responses...". Explain how their personality traits make them a fit for {'this specific role' if desired_role else 'the recommended role'}.]
 
-### 💻 Technical Assessment
+💻 Technical Assessment
 **Current Standing:** [1 sentence assessment of their level]
 
 **Key Focus:** [1 specific technical concept or tool they should master first]
 
-### 🗺️ 2026 Roadmap (3 Steps)
+🗺️ 2026 Roadmap (3 Steps)
 **Short Term:** [Immediate skill/language to learn]
 **Mid Term:** [Specific project type or certification to build/earn]
 **Long Term:** [Job readiness or specialized mastery goal]
@@ -64,7 +64,6 @@ STRICT OUTPUT FORMAT (Markdown):
 Keep the total response under 200 words. Be concise and professional.
 """
 
-        # Using gemini-2.0-flash to resolve the 404/NOT_FOUND SDK error
         response = client.models.generate_content(
             model="gemini-3-flash-preview", 
             contents=prompt
