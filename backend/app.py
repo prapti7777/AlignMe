@@ -52,14 +52,14 @@ STRICT OUTPUT FORMAT (Markdown):
 [Write 1 single paragraph starting with "Based on your responses...". Explain how their personality traits make them a fit for {'this specific role' if desired_role else 'the recommended role'}.]
 
 ### 💻 Technical Assessment
-* **Current Standing:** [1 sentence assessment of their level]
-<br>
-* **Key Focus:** [1 specific technical concept or tool they should master first]
+**Current Standing:** [1 sentence assessment of their level]
+
+**Key Focus:** [1 specific technical concept or tool they should master first]
 
 ### 🗺️ 2026 Roadmap (3 Steps)
-1. **Short Term:** [Immediate skill/language to learn]
-2. **Mid Term:** [Specific project type or certification to build/earn]
-3. **Long Term:** [Job readiness or specialized mastery goal]
+**Short Term:** [Immediate skill/language to learn]
+**Mid Term:** [Specific project type or certification to build/earn]
+**Long Term:** [Job readiness or specialized mastery goal]
 
 Keep the total response under 200 words. Be concise and professional.
 """
