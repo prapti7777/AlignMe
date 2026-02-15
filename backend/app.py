@@ -48,15 +48,19 @@ STRICT OUTPUT FORMAT (Markdown):
 
 {context_header}
 
-👤 Your Professional Profile
+Your Professional Profile 
+</Br>
 [Write 1 single paragraph starting with "Based on your responses...". Explain how their personality traits make them a fit for {'this specific role' if desired_role else 'the recommended role'}.]
 
-💻 Technical Assessment
+</Br>
+
+Technical Assessment </Br>
+
 **Current Standing:** [1 sentence assessment of their level]
 
 **Key Focus:** [1 specific technical concept or tool they should master first]
 
-🗺️ 2026 Roadmap (3 Steps)
+2026 Roadmap (3 Steps) </Br>
 **Short Term:** [Immediate skill/language to learn]
 **Mid Term:** [Specific project type or certification to build/earn]
 **Long Term:** [Job readiness or specialized mastery goal]

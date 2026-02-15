@@ -28,12 +28,14 @@ body {
     border-top: 8px solid var(--primary-teal);
 }
 
-/* Header Layout: Aligns button and title on one row */
+/* --- Header & Navigation Layout --- */
+
 .header-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 5px;
+    min-height: 50px; /* Prevents layout jump when button toggles */
 }
 
 .main-title {
@@ -51,7 +53,6 @@ body {
     color: var(--text-muted);
 }
 
-/* Updated Back Button Styling */
 .back-btn {
     background: var(--pure-white);
     border: 1px solid var(--border-color);
@@ -65,11 +66,23 @@ body {
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    flex-shrink: 0;
 }
 
-/* Maintain a spacer on the right so the title stays perfectly centered */
 .header-spacer {
     width: 42px; 
+    flex-shrink: 0;
+}
+
+/* Logic for Roadmap page cleanup */
+.results-active .header-row {
+    display: block; /* Returns to standard block layout for final screen */
+    text-align: center;
+}
+
+.results-active .header-spacer, 
+.results-active .back-btn {
+    display: none !important; /* Completely removes them from the flow on final page */
 }
 
 .back-btn:hover {
@@ -77,14 +90,14 @@ body {
     color: var(--pure-white);
     border-color: var(--primary-teal);
     transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(0, 128, 128, 0.2);
 }
 
 .back-btn.hidden {
-    visibility: hidden; /* Use visibility to keep the title centered when button is gone */
+    visibility: hidden; /* Keeps title centered during quiz */
 }
 
-/* Quiz Content Styles */
+/* --- Quiz & UI Elements --- */
+
 #quiz-container {
     width: 100%;
     margin-top: 20px;
@@ -125,18 +138,27 @@ body {
     transform: translateY(-2px);
 }
 
-/* Result Styles */
+/* --- Result & Roadmap Styles --- */
+
+#result-container {
+    width: 100%;
+    margin-top: 10px;
+}
+
 .assessment-item {
-    margin-bottom: 15px;
+    margin-bottom: 5px; /* Reduced margin since we are adding <br> in JS */
     display: block;
     line-height: 1.6;
+    text-align: left;
 }
 
 .result-header {
     color: var(--primary-teal);
     background: #f0fdfa;
-    padding: 10px;
+    padding: 12px;
     border-radius: 6px;
+    margin-top: 20px;
+    text-align: center;
 }
 
 strong {

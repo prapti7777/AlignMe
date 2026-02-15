@@ -47,7 +47,7 @@ function loadQuestion() {
     
     optionsBox.innerHTML = '';
 
-    // Toggle button visibility based on progress
+    // Toggle back button visibility: Hidden only on the very first question
     if (currentPhase === "personality" && currentIndex === 0) {
         backBtn.classList.add('hidden');
     } else {
@@ -98,7 +98,6 @@ function goBack() {
     const questionCard = document.getElementById('question-card');
 
     if (!choiceScreen.classList.contains('hidden')) {
-        // Return to last personality question from Choice Screen
         choiceScreen.classList.add('hidden');
         questionCard.classList.remove('hidden');
         currentPhase = "personality";
@@ -106,12 +105,10 @@ function goBack() {
         allResponses.personality.pop(); 
         loadQuestion();
     } else if (currentPhase === "technical" && currentIndex === 0) {
-        // Return to Choice Screen from first technical question
         questionCard.classList.add('hidden');
         choiceScreen.classList.remove('hidden');
         document.getElementById('progress').style.width = '66%';
     } else if (currentIndex > 0) {
-        // Standard step back
         currentIndex--;
         if (currentPhase === "personality") allResponses.personality.pop();
         else allResponses.technical.pop();
@@ -142,9 +139,12 @@ function startInterestPath() {
 }
 
 async function submitFinalData() {
+    // Tell the CSS we are now in "Results Mode" to center the layout
+    document.body.classList.add('results-active'); 
+
     document.getElementById('quiz-container').classList.add('hidden');
+    document.getElementById('back-btn').classList.add('hidden'); 
     document.getElementById('loading-spinner').classList.remove('hidden');
-    document.getElementById('back-btn').classList.add('hidden'); // Hide back button during loading
 
     try {
         const res = await fetch('http://127.0.0.1:5000/analyze', {
@@ -153,18 +153,31 @@ async function submitFinalData() {
             body: JSON.stringify({ responses: allResponses })
         });
         const data = await res.json();
+        
+        // Remove thought blocks if present
         let cleanText = data.result.replace(/<thought>[\s\S]*?<\/thought>/g, "").trim();
         
+        // Formatter for AI roadmap content with specific bolding and line spacing
         let formatted = cleanText
+            // 1. Format the main Targeted Role header
             .replace(/^## (.*$)/gim, '<h3 class="result-header">🎯 $1</h3>')
+            
+            // 2. Bold specific Section Headers and add 1-line space (using <br><br>)
+            .replace(/(Your Professional Profile|Technical Assessment|2026 Roadmap \(3 Steps\)|2026 Roadmap)/gim, 
+                     '<br><strong>$1</strong><br><br>')
+            
+            // 3. Keep standard markdown bolding for general text
             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-            .replace(/(Current Standing|Key Focus|Short Term|Mid Term|Long Term)[:\s]*(.*)/gim, 
-                     '<div class="assessment-item">🔹 <strong>$1:</strong> $2</div>');
+            
+            // 4. Format assessment items (Standing, Focus, Terms) with a preceding bullet and following line space
+            .replace(/(Current Standing|Key Focus|Short Term|Mid Term|Long Term)[:\s]*-?\s*(.*)/gim, 
+                     '<div class="assessment-item">🔹 <strong>$1:</strong> $2</div><br>');
 
         document.getElementById('ai-response').innerHTML = formatted;
         document.getElementById('loading-spinner').classList.add('hidden');
         document.getElementById('result-container').classList.remove('hidden');
     } catch (e) {
+        console.error("Submission Error:", e);
         alert("Check your Flask server connection.");
         location.reload();
     }
