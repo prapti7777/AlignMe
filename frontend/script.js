@@ -157,19 +157,20 @@ async function submitFinalData() {
         // Remove thought blocks if present
         let cleanText = data.result.replace(/<thought>[\s\S]*?<\/thought>/g, "").trim();
         
-        // Formatter for AI roadmap content with specific bolding and line spacing
+        // Formatter for AI roadmap content
         let formatted = cleanText
-            // 1. Format the main Targeted Role header
+            // 1. Format the main Targeted Role header (matches ## at start of line)
             .replace(/^## (.*$)/gim, '<h3 class="result-header">🎯 $1</h3>')
             
-            // 2. Bold specific Section Headers and add 1-line space (using <br><br>)
-            .replace(/(Your Professional Profile|Technical Assessment|2026 Roadmap \(3 Steps\)|2026 Roadmap)/gim, 
+            // 2. Bold Section Headers, remove any leading/trailing hashtags (###), and add spaces
+            // This specifically targets the names to ensure hashtags like those in image_223ee5.png are removed.
+            .replace(/(?:###\s*)?(Your Professional Profile|Technical Assessment|2026 Roadmap \(3 Steps\)|2026 Roadmap)(?:\s*###)?/gim, 
                      '<br><strong>$1</strong><br><br>')
             
-            // 3. Keep standard markdown bolding for general text
+            // 3. Keep standard markdown bolding for general text (**text**)
             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
             
-            // 4. Format assessment items (Standing, Focus, Terms) with a preceding bullet and following line space
+            // 4. Format assessment items with a preceding bullet and following line space
             .replace(/(Current Standing|Key Focus|Short Term|Mid Term|Long Term)[:\s]*-?\s*(.*)/gim, 
                      '<div class="assessment-item">🔹 <strong>$1:</strong> $2</div><br>');
 
