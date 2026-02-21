@@ -124,7 +124,7 @@ Keep the total response under 200 words. Be concise and professional.
 """
 
         response = client.models.generate_content(
-            model="gemini-2.0-flash", 
+            model="gemini-3-flash-preview", 
             contents=prompt
         )
         
