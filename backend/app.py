@@ -1,8 +1,10 @@
 import os
+import sqlite3 # New import
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from google import genai
 from dotenv import load_dotenv
+from werkzeug.security import generate_password_hash, check_password_hash # New import
 
 # Initialize Flask and load environment variables
 app = Flask(__name__)
@@ -10,9 +12,63 @@ CORS(app)
 load_dotenv()
 
 # Setup Gemini Client
-# The google-genai SDK (v2.0+) works best with the 2.0-flash model string
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
+# --- DATABASE HELPER ---
+# Adjust the path if users.db is inside the backend folder
+DB_PATH = os.path.join(os.path.dirname(__file__), 'users.db')
+
+def get_db_connection():
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+# --- NEW AUTH ROUTES ---
+
+@app.route('/register', methods=['POST'])
+def register():
+    try:
+        data = request.json
+        username = data.get('username')
+        password = data.get('password')
+
+        if not username or not password:
+            return jsonify({"error": "Username and password are required"}), 400
+
+        hashed_password = generate_password_hash(password)
+
+        conn = get_db_connection()
+        conn.execute('INSERT INTO users (username, password) VALUES (?, ?)',
+                     (username, hashed_password))
+        conn.commit()
+        conn.close()
+        return jsonify({"message": "Registration successful! You can now login."}), 201
+    except sqlite3.IntegrityError:
+        return jsonify({"error": "Username already exists"}), 409
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/login', methods=['POST'])
+def login():
+    try:
+        data = request.json
+        username = data.get('username')
+        password = data.get('password')
+
+        conn = get_db_connection()
+        user = conn.execute('SELECT * FROM users WHERE username = ?', (username,)).fetchone()
+        conn.close()
+
+        if user and check_password_hash(user['password'], password):
+            # In a full app, you'd set a session here. 
+            # For now, we return success so the frontend can proceed.
+            return jsonify({"message": "Login successful!", "user": username}), 200
+        
+        return jsonify({"error": "Invalid username or password"}), 401
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# --- EXISTING ANALYZE ROUTE (DO NOT TOUCH) ---
 @app.route('/analyze', methods=['POST'])
 def analyze_career():
     try:
@@ -68,7 +124,7 @@ Keep the total response under 200 words. Be concise and professional.
 """
 
         response = client.models.generate_content(
-            model="gemini-3-flash-preview", 
+            model="gemini-2.0-flash", 
             contents=prompt
         )
         

@@ -18,6 +18,45 @@ body {
     padding: 20px;
 }
 
+#toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px; /* Moves it to the top-right corner */
+    background: var(--primary-teal);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.toast-hidden {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(50px); /* Slides in from the right */
+}
+
+#auth-status-msg {
+    margin-top: 15px;
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    min-height: 1.2rem; /* Reserves space so the card doesn't jump */
+}
+
+.status-hidden {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(5px);
+}
+
 .container {
     max-width: 650px;
     width: 100%;
