@@ -1,4 +1,4 @@
-:root {
+/* :root {
     --primary-teal: #008080;
     --accent-yellow: #FFD700;
     --pure-white: #ffffff;
@@ -21,7 +21,7 @@ body {
 #toast-container {
     position: fixed;
     top: 20px;
-    right: 20px; /* Moves it to the top-right corner */
+    right: 20px; 
     background: var(--primary-teal);
     color: white;
     padding: 12px 24px;
@@ -39,7 +39,7 @@ body {
 .toast-hidden {
     opacity: 0;
     visibility: hidden;
-    transform: translateX(50px); /* Slides in from the right */
+    transform: translateX(50px); 
 }
 
 #auth-status-msg {
@@ -48,7 +48,7 @@ body {
     font-size: 0.9rem;
     font-weight: 600;
     transition: all 0.3s ease;
-    min-height: 1.2rem; /* Reserves space so the card doesn't jump */
+    min-height: 1.2rem; 
 }
 
 .status-hidden {
@@ -67,14 +67,13 @@ body {
     border-top: 8px solid var(--primary-teal);
 }
 
-/* --- Header & Navigation Layout --- */
 
 .header-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 5px;
-    min-height: 50px; /* Prevents layout jump when button toggles */
+    min-height: 50px; 
 }
 
 .main-title {
@@ -113,15 +112,15 @@ body {
     flex-shrink: 0;
 }
 
-/* Logic for Roadmap page cleanup */
+
 .results-active .header-row {
-    display: block; /* Returns to standard block layout for final screen */
+    display: block; 
     text-align: center;
 }
 
 .results-active .header-spacer, 
 .results-active .back-btn {
-    display: none !important; /* Completely removes them from the flow on final page */
+    display: none !important; 
 }
 
 .back-btn:hover {
@@ -132,10 +131,9 @@ body {
 }
 
 .back-btn.hidden {
-    visibility: hidden; /* Keeps title centered during quiz */
+    visibility: hidden; 
 }
 
-/* --- Quiz & UI Elements --- */
 
 #quiz-container {
     width: 100%;
@@ -177,6 +175,333 @@ body {
     transform: translateY(-2px);
 }
 
+
+#result-container {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.assessment-item {
+    margin-bottom: 5px; 
+    display: block;
+    line-height: 1.6;
+    text-align: left;
+}
+
+.result-header {
+    color: var(--primary-teal);
+    background: #f0fdfa;
+    padding: 12px;
+    border-radius: 6px;
+    margin-top: 20px;
+    text-align: center;
+}
+
+strong {
+    color: var(--primary-teal);
+    font-weight: 700;
+}
+
+select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    border: 2px solid var(--border-color);
+}
+
+.hidden { display: none !important; }
+
+.spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid var(--primary-teal);
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    animation: spin 1s linear infinite;
+    margin: 20px auto;
+}
+
+@keyframes spin { 100% { transform: rotate(360deg); } } */
+
+/* The below is test */
+
+
+:root {
+    --primary-teal: #008080;
+    --accent-yellow: #FFD700;
+    --pure-white: #ffffff;
+    --bg-light: #f4f7f6; 
+    --text-main: #1a2e2e; 
+    --text-muted: #4a6666;
+    --border-color: #d1dbdb;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-light);
+    color: var(--text-main);
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    /* Added alignment to keep the stable card centered vertically */
+    align-items: center; 
+    min-height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+#toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--primary-teal);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.toast-hidden {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(50px);
+}
+
+#auth-status-msg {
+    margin-top: 15px;
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    min-height: 1.2rem;
+}
+
+.status-hidden {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(5px);
+}
+
+
+.container {
+    width: 650px;
+    min-height: 620px; 
+    display: flex;
+    flex-direction: column;
+    background: var(--pure-white);
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0, 128, 128, 0.1);
+    border-top: 8px solid var(--primary-teal);
+    box-sizing: border-box;
+    /* ADD THIS: Smoothly animate size changes */
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); 
+}
+
+/* NEW: Style for the container while processing */
+.container.loading-mode {
+    min-height: 380px; /* Much shorter for the spinner screen */
+    width: 500px;      /* Slightly narrower for better focus */
+}
+
+/* NEW: Ensure results can grow if the roadmap is long */
+.results-active .container {
+    height: auto !important;      /* Allows container to grow with the text */
+    min-height: auto !important;   /* Removes the quiz height restriction */
+    width: 650px;
+    margin-top: 50px;             /* Adds space at the top so it's not cut off */
+    margin-bottom: 50px;          /* Adds space at the bottom for better scrolling */
+    display: block;               /* Changes from flex to standard block for long text */
+}
+
+.results-active {
+    align-items: flex-start !important; /* Starts content at the top instead of centering it */
+    overflow-y: auto !important;        /* Enables browser scrollbar */
+}
+
+/* --- Core Container Logic --- */
+.container {
+    width: 650px;
+    max-width: 95%;
+    /* We use a smaller base min-height for the login screen */
+    min-height: 400px; 
+    display: flex;
+    flex-direction: column;
+    background: var(--pure-white);
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0, 128, 128, 0.1);
+    border-top: 8px solid var(--primary-teal);
+    box-sizing: border-box;
+    /* Smoothly animate size changes between login, quiz, and loading */
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); 
+}
+
+/* Specific size for the Quiz screen to keep it static */
+#app-content:not(.hidden) .container {
+    min-height: 620px; 
+}
+
+/* Style for the container while processing */
+.container.loading-mode {
+    min-height: 380px !important; /* Much shorter for the spinner screen */
+    width: 500px !important;      /* Slightly narrower for better focus */
+}
+
+/* Ensure results can grow if the roadmap is long */
+.results-active .container {
+    height: auto !important;      
+    min-height: auto !important;   
+    width: 650px !important;
+    margin-top: 50px;             
+    margin-bottom: 50px;          
+    display: block;               
+}
+
+.results-active {
+    align-items: flex-start !important; 
+    overflow-y: auto !important;        
+}
+
+/* --- Elements --- */
+#question-text {
+    /* Reserved space for exactly 2 lines of text to prevent jumping */
+    min-height: 56px; 
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center; 
+    font-size: 1.25rem;
+    line-height: 1.4;
+    font-weight: 600;
+}
+
+/* --- Header & Navigation Layout --- */
+
+.header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    min-height: 50px;
+}
+
+.main-title {
+    color: var(--primary-teal);
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin: 0;
+    flex-grow: 1;
+    text-align: center;
+}
+
+.tagline {
+    text-align: center;
+    margin-top: 5px;
+    color: var(--text-muted);
+}
+
+.back-btn {
+    background: var(--pure-white);
+    border: 1px solid var(--border-color);
+    color: var(--primary-teal);
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    flex-shrink: 0;
+}
+
+.header-spacer {
+    width: 42px; 
+    flex-shrink: 0;
+}
+
+.results-active .header-row {
+    display: block;
+    text-align: center;
+}
+
+.results-active .header-spacer, 
+.results-active .back-btn {
+    display: none !important;
+}
+
+.back-btn:hover {
+    background: var(--primary-teal);
+    color: var(--pure-white);
+    border-color: var(--primary-teal);
+    transform: scale(1.05);
+}
+
+.back-btn.hidden {
+    visibility: hidden;
+}
+
+/* --- Quiz & UI Elements --- */
+
+#quiz-container {
+    width: 100%;
+    margin-top: 20px;
+    /* Allow the quiz content to take up the available stable space */
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+#progress-bar {
+    background: #e0ecec;
+    height: 10px;
+    border-radius: 5px;
+    margin-bottom: 25px;
+    overflow: hidden;
+    width: 100%;
+}
+
+#progress {
+    background: var(--primary-teal);
+    width: 0%;
+    height: 100%;
+    transition: width 0.4s ease-in-out;
+}
+
+#question-card {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.option-btn {
+    width: 100%;
+    padding: 14px;
+    margin: 8px 0;
+    border: 2px solid var(--primary-teal);
+    border-radius: 8px;
+    background: var(--pure-white);
+    color: var(--primary-teal);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.option-btn:hover {
+    background: var(--primary-teal);
+    color: var(--pure-white);
+    transform: translateY(-2px);
+}
+
 /* --- Result & Roadmap Styles --- */
 
 #result-container {
@@ -185,7 +510,7 @@ body {
 }
 
 .assessment-item {
-    margin-bottom: 5px; /* Reduced margin since we are adding <br> in JS */
+    margin-bottom: 5px;
     display: block;
     line-height: 1.6;
     text-align: left;

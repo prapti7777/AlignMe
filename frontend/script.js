@@ -420,6 +420,11 @@ function startInterestPath() {
 }
 
 async function submitFinalData() {
+    // Select the container inside app-content
+    const container = document.querySelector('#app-content .container');
+    
+    // Enter Loading State: Shrink the container and show spinner
+    container.classList.add('loading-mode');
     document.body.classList.add('results-active'); 
     document.getElementById('quiz-container').classList.add('hidden');
     document.getElementById('back-btn').classList.add('hidden'); 
@@ -443,10 +448,15 @@ async function submitFinalData() {
             .replace(/(Current Standing|Key Focus|Short Term|Mid Term|Long Term)[:\s]*-?\s*(.*)/gim, 
                      '<div class="assessment-item">🔹 <strong>$1:</strong> $2</div><br>');
 
+        // Exit Loading State: Remove shrink class so it can expand for results
+        container.classList.remove('loading-mode');
+        
         document.getElementById('ai-response').innerHTML = formatted;
         document.getElementById('loading-spinner').classList.add('hidden');
         document.getElementById('result-container').classList.remove('hidden');
     } catch (e) {
+        // Clean up on error
+        container.classList.remove('loading-mode');
         console.error("Submission Error:", e);
         alert("Check your Flask server connection.");
         location.reload();
